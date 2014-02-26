@@ -1,0 +1,58 @@
+<template name="novoPost">
+	<div class="col-lg-12">
+		<form role="form">
+		  <div class="form-group">
+		    <label for="txtTitulo">Título</label>
+		    <input type="text" class="form-control" id="txtTitulo" placeholder="Título">
+		  </div>
+		  <div class="form-group">
+		    <label for="taDescricao">Descrição</label>
+		    <textarea class="form-control" rows="7" id="taDescricao" placeholder="Descrição..."> </textarea>
+		  </div>
+		  <button type="submit" class="btn btn-default" id="btnPost">Inserir</button>
+		  <button type="submit" class="btn btn-danger" id="btnRemove">Remover Tudo</button>
+		</form>	
+		</p>
+		{{#each listaPost}}
+			{{> posts}}
+	    {{/each}}
+	</div>
+</template>
+
+<template name="posts">
+	<hr> </hr>
+	<div class="well">
+		<span > {{titulo}}  - {{formatarData}} </span>
+	</div>
+	<div >
+		<p> {{descricao}} </p>
+	</div>
+
+	<br> <p>Comentários: </p>
+	{{> novoComentario}}
+	<div class="row">
+		<div class="col-lg-1">
+		</div>
+		<div class="col-lg-11">
+			
+			{{#each listaComentario}}
+				{{> comentario}}
+		    {{/each}}
+		</div>
+	</div>
+</template>
+
+<template name="novoComentario" >
+	<textarea rows="7" cols="50" class="taComentario"> </textarea>
+	</p>
+	<button class="btn btn-primary" id="btnComentario">Inserir</button>
+</template>
+
+<template name="comentario" >
+	<div class="form-group">
+	    <label>{{usuario}} - {{formatarData}} </label>
+	  </div>
+	<div class="well">
+ 		<p>{{descricao}}</p>
+	</div>
+</template>
