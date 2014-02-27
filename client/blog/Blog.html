@@ -1,22 +1,62 @@
+<template name="inicio">
+	{{> login}}	
+	{{> registro}}	
+	{{> novoPost}}	
+</template>
+
+<template name="login">
+	{{#if isLogin}}
+	<form id="login-form" action="action">
+		<div>
+			<input type="text" id="loginEmail" placeholder="usuario"/>
+			<input type="password" id="loginPassword" placeholder="senha"/>
+			<button type="button" class="btn btn-default" id="btnLogin" > Logar </button>
+		</div>
+		<a id="lkRegistro"> Registre-se </a>
+	</form>
+	{{/if}}
+</template>
+	
+<template name="registro">
+	{{#if isRegistro}}
+		<form id="register-form" action="action">
+	    	<div>
+		       <input type="text" id="registroEmail"  placeholder="usuario"/>
+		       <input type="password" id="registroPassword" placeholder="senha"/>
+		      <button type="button" class="btn btn-default" id="btnRegistrar" > Registrar </button>
+	     	</div>
+	    <a id="lkLogin"> Login </a>
+	   </form>
+	{{/if}}
+</template>
+
 <template name="novoPost">
-	<div class="col-lg-12">
-		<form role="form">
-		  <div class="form-group">
-		    <label for="txtTitulo">Título</label>
-		    <input type="text" class="form-control" id="txtTitulo" placeholder="Título">
-		  </div>
-		  <div class="form-group">
-		    <label for="taDescricao">Descrição</label>
-		    <textarea class="form-control" rows="7" id="taDescricao" placeholder="Descrição..."> </textarea>
-		  </div>
-		  <button type="submit" class="btn btn-default" id="btnPost">Inserir</button>
-		  <button type="submit" class="btn btn-danger" id="btnRemove">Remover Tudo</button>
-		</form>	
-		</p>
-		{{#each listaPost}}
-			{{> posts}}
-	    {{/each}}
-	</div>
+	{{#if isLogado}}
+		<div class="row">
+			<div class="col-lg-9"></div>
+			<div class="col-lg-3">
+				<button type="button" class="btn btn-danger" id="btnRemove">Remover Tudo</button>
+				<button type="button" class="btn btn-warning" id="btnLogout">Logout</button>
+			</div>
+		</div>
+		<div class="col-lg-12"s>
+			<form role="form">
+			  <div class="form-group">
+			    <label for="txtTitulo">Título</label>
+			    <input type="text" class="form-control" id="txtTitulo" placeholder="Título">
+			  </div>
+			  <div class="form-group">
+			    <label for="taDescricao">Descrição</label>
+			    <textarea class="form-control" rows="7" id="taDescricao" placeholder="Descrição..."> </textarea>
+			  </div>
+			  <button type="button" class="btn btn-default" id="btnPost">Inserir</button>
+			</form>	
+			</p>
+			{{#each listaPost}}
+				{{> posts}}
+		    {{/each}}
+		</div>
+	{{/if}}
 </template>
 
 <template name="posts">
@@ -43,9 +83,9 @@
 </template>
 
 <template name="novoComentario" >
-	<textarea rows="7" cols="50" class="taComentario"> </textarea>
+	<textarea class="form-control" rows="7" cols="50" id="taComentario"> </textarea>
 	</p>
-	<button class="btn btn-primary" id="btnComentario">Inserir</button>
+	<button type="button" class="btn btn-primary" id="btnComentario">Inserir</button>
 </template>
 
 <template name="comentario" >
