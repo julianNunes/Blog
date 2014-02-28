@@ -10,3 +10,4 @@ bootstrap-3
 moment
 accounts-base
 accounts-password
+iron-router

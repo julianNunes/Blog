@@ -6,6 +6,14 @@ Meteor.publish("getPostsUsaurio", function(usuario) {
     return [posts, comenst];
   });
 
+Meteor.publish("getPosts", function() {
+    var posts = Posts.find();
+    var postIds= posts.map(function(doc) { return doc._id; });
+    var comenst =  Coments.find({idPost: {$in: postIds}});
+
+    return [posts, comenst];
+  });
+
 Meteor.methods({
 	removeAllPosts: function() {
 		return Posts.remove({});

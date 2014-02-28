@@ -1,20 +1,56 @@
-Session.set("estadoInicial", null); 
-
 Deps.autorun(function () {
-  if(Meteor.user()!=null){
-    Meteor.subscribe("getPostsUsaurio", Meteor.user().username); }
+   Meteor.subscribe("getPosts");
+ 
 });
 
  //-/-/-/-/-/-/-/ INICIO /-/-/-/-//-/-/-/-/
-Template.inicio.rendered = function() {
-  if(Session.equals("estadoInicial", null)) {
-    Session.set("estadoInicial", "login"); 
-  }
+Template.cabecalho.rendered = function() {
+
 }
+
+Template.cabecalho.events({
+  'click #btnRegistrarHome' : function(){
+    Router.go("registro");
+    // return false; 
+  },
+
+  "click #btnLoginHome": function() {
+    Router.go("login");
+    return false;
+  },
+
+  'click #btnLogout' : function () {
+    Meteor.logout();
+    Router.go("novoPost");
+    return false;
+  },
+
+  'click #btnHome' : function () {
+    Router.go("novoPost");
+    return false;
+  },
+
+  'click #btnRemover' : function (evt, tpl) {
+
+    var r=confirm("Deseja remover todos os posts?");
+    if (r==true)
+    { Meteor.call("removeAllPosts", function (error, result) { }); }
+
+    return false;
+  }
+});
+
+Template.cabecalho.helpers({
+   usuario: function (){
+    if(Meteor.user()!=null) {
+      return Meteor.user().username; 
+    }
+    return "";
+   }
+});
 
 Template.login.events({
   'click #btnLogin' : function(evt, tpl){
-      // e.preventDefault();
       // retrieve the input field values
       var username = tpl.find('#loginEmail').value;
       var password = tpl.find('#loginPassword').value;
@@ -22,32 +58,24 @@ Template.login.events({
       if(username.length<=0)      { alert("Por favor digite um login");   return false; }
       if(password.length<=0)   { alert("Por favor digite uma senha");  return false; } 
 
-      // If validation passes, supply the appropriate fields to the
-      // Meteor.loginWithPassword() function.
       Meteor.loginWithPassword(username, password, function(err){
         if (err){
           alert("Usuario ou senha inválidos");
-          Session.set("estadoInicial", "login");
         }
         else {
-          Session.set("estadoInicial", "logado");
+          Router.go("novoPost");
         }
       });
     return false; 
   },
 
   "click #lkRegistro": function() {
-      Session.set("estadoInicial", "registro");
-  },
+    Router.go("registro");
+  }
 });
-
-Template.login.isLogin = function() {
-    return Session.equals("estadoInicial", "login");
-}
 
 Template.registro.events({
   'click #btnRegistrar' : function(e, t) {
-      e.preventDefault();
       var username = t.find('#registroEmail').value;
       var password = t.find('#registroPassword').value;
 
@@ -66,19 +94,30 @@ Template.registro.events({
   },
 
   "click #lkLogin": function() {
-    Session.set("estadoInicial", "login");
+    Router.go("login");
   }
 });
 
-Template.registro.isRegistro= function() {
-    return Session.equals("estadoInicial", "registro");
-}
 
 ///-/-/-/-/-/------ POST ---/-/-/-/-/---//
 
 
- Template.novoPost.rendered = function() {
+Template.posts.helpers({
+   listaComentario: function (){
+      return Coments.find({idPost:this._id}, {sort: {data: -1}});
+   },
+
+   formatarData: function (){
+      return moment(this.data).format("DD/MM/YYYY hh:mm");
+   }
+});
+
+Template.posts.events({
+  'click #lkTitulo': function (evt, tpl) {
+    Router.go("postShow", {_idPost: this._id});
+    return false;
   }
+});
 
 Template.novoPost.events({
   'click #btnPost' : function (evt, tpl) {
@@ -91,42 +130,19 @@ Template.novoPost.events({
     if(titulo.length<=0)     { alert("Post sem titulo!\nPor favor inserir");      return false; }
     if(descricao.length<=0)  { alert("Post sem descrição!\nPor favor inserir");   return false; }
 
-    var r = Posts.insert({usuario: usuario, titulo: titulo, descricao: descricao, data: new Date()});
-    console.log(r);
-
-    tpl.find("#txtTitulo").value = '';
-    tpl.find("#taDescricao").value = '';
-
     return false;
-  },
-
-  'click #btnRemove' : function (evt, tpl) {
-
-    var r=confirm("Deseja remover todos os posts?");
-    if (r==true)
-    { Meteor.call("removeAllPosts", function (error, result) { }); }
-
-    return false;
-  },
-
-  'click #btnLogout' : function (evt, tpl) {
-    Session.set("estadoInicial", "login");
-    Meteor.logout();
   }
 });
 
-Template.novoPost.helpers({
-   listaPost: function (){
-      return Posts.find({}, {sort: {data: -1}});
-   },
-
-   isLogado: function(){
-      return Session.equals("estadoInicial", "logado"); 
-   }
-});
+ //-/-/-/-/-/-/-/ INICIO /-/-/-/-//-/-/-/-/
+Template.listaPosts.rendered = function() {
+  console.log(this.data);
+}
 
 Template.novoComentario.rendered = function() {
-    this.find("#taComentario").value = "";
+    if(this.find("#taComentario")!=null) {
+      this.find("#taComentario").value = ""; 
+    }
   }
 
 Template.novoComentario.events({
@@ -145,15 +161,6 @@ Template.novoComentario.events({
   }
 });
 
-Template.posts.helpers({
-   listaComentario: function (){
-      return Coments.find({idPost:this._id}, {sort: {data: -1}});
-   },
-
-   formatarData: function (){
-      return moment(this.data).format("DD/MM/YYYY hh:mm");
-   }
-});
 
 Template.comentario.helpers({
    formatarData: function (){

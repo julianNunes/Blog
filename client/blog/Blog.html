@@ -1,11 +1,24 @@
-<template name="inicio">
-	{{> login}}	
-	{{> registro}}	
-	{{> novoPost}}	
+<template name="cabecalho">
+	<div class="row">
+		<div class="col-lg-8">
+			<title>Blog's</title>
+			<h4 style="bold"> Blog - Seja bem vindo :)</h4>
+		</div>
+		<div class="col-lg-4">
+			{{#if currentUser}}
+				<label> {{usuario}} esta logado.</label>
+				<button type="button" class="btn btn-default" id="btnLogout">Logout</button>
+				<button type="button" class="btn btn-danger" id="btnRemover">Remover</button>
+			{{else}}
+				<button type="button" class="btn btn-default" id="btnHome" > Home </button>
+				<button type="button" class="btn btn-primary" id="btnRegistrarHome" > Registrar </button>
+				<button type="button" class="btn btn-success" id="btnLoginHome">Login</button>
+			{{/if}}
+		</div>
+	</div>
 </template>
 
 <template name="login">
-	{{#if isLogin}}
 	<form id="login-form" action="action">
 		<div>
 			<input type="text" id="loginEmail" placeholder="usuario"/>
@@ -14,32 +27,30 @@
 		</div>
 		<a id="lkRegistro"> Registre-se </a>
 	</form>
-	{{/if}}
 </template>
 	
 <template name="registro">
-	{{#if isRegistro}}
-		<form id="register-form" action="action">
-	    	<div>
-		       <input type="text" id="registroEmail"  placeholder="usuario"/>
-		       <input type="password" id="registroPassword" placeholder="senha"/>
-		      <button type="button" class="btn btn-default" id="btnRegistrar" > Registrar </button>
-	     	</div>
-	    <a id="lkLogin"> Login </a>
-	   </form>
-	{{/if}}
+	<form id="register-form" action="action">
+    	<div>
+	       	<input type="text" id="registroEmail"  placeholder="usuario"/>
+	       	<input type="password" id="registroPassword" placeholder="senha"/>
+	      	<button type="button" class="btn btn-default" id="btnRegistrar" > Registrar </button>
+     	</div>
+    <a id="lkLogin"> Login </a>
+   </form>
+</template>
+	
+<template name="layoutPosts" >
+	<div class="container">
+		{{yield 'cabecalho'}}
+		{{yield 'novoPost'}}
+		{{yield}}
+	</div>
 </template>
 
 <template name="novoPost">
-	{{#if isLogado}}
-		<div class="row">
-			<div class="col-lg-9"></div>
-			<div class="col-lg-3">
-				<button type="button" class="btn btn-danger" id="btnRemove">Remover Tudo</button>
-				<button type="button" class="btn btn-warning" id="btnLogout">Logout</button>
-			</div>
-		</div>
-		<div class="col-lg-12"s>
+	<div class="col-lg-12"s>
+		{{#if currentUser}}
 			<form role="form">
 			  <div class="form-group">
 			    <label for="txtTitulo">Título</label>
@@ -51,36 +62,48 @@
 			  </div>
 			  <button type="button" class="btn btn-default" id="btnPost">Inserir</button>
 			</form>	
-			</p>
-			{{#each listaPost}}
-				{{> posts}}
-		    {{/each}}
-		</div>
-	{{/if}}
+			
+		{{/if}}
+	</div>
 </template>
 
-<template name="posts">
-	<hr> </hr>
-	<div class="well">
-		<span > {{titulo}}  - {{formatarData}} </span>
-	</div>
-	<div >
-		<p> {{descricao}} </p>
-	</div>
 
-	<br> <p>Comentários: </p>
-	{{> novoComentario}}
+<template name="listaPosts">
+	{{#each this}}
+		{{> posts}}
+    {{/each}}
+</template>
+
+
+<template name="posts">
+	<hr/>
+
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="well">
+				<a id="lkTitulo"> {{titulo}} </a>
+				<p><label> Postado por {{usuario}} : {{formatarData}}.</label></p>
+				<p>{{descricao}}</p>
+	
+			</div>
+		</div>
+	</div>	
+
+	{{#if currentUser}}
+		<br/> <p>Comentários: </p>
+		{{> novoComentario}}
+	{{/if}}
 	<div class="row">
 		<div class="col-lg-1">
 		</div>
 		<div class="col-lg-11">
-			
 			{{#each listaComentario}}
 				{{> comentario}}
 		    {{/each}}
 		</div>
 	</div>
 </template>
+
 
 <template name="novoComentario" >
 	<textarea class="form-control" rows="7" cols="50" id="taComentario"> </textarea>

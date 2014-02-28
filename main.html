@@ -1,12 +1,15 @@
 <head>
-  <title>Blog do Julian</title>
-  <h2 style="bold"> Blog do Julian </h2>
-  <h3> Seja bem vindo :)</h3>
-  <hr> </hr>
+
 </head>
 
 <body>
-	<div class="container">
-		{{> inicio}}	
-	</div>
 </body>
+
+<template name="layout">
+ 	<div class="container">
+ 		{{yield 'cabecalho'}}
+  		{{yield}}
+ 	</div>
+</template>
+
+
